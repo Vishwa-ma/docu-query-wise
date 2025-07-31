@@ -1,42 +1,22 @@
 const API_BASE_URL = 'http://localhost:8000/api/v1';
 const BEARER_TOKEN = 'af215d20c2561423c20b7ccdfbb4dbc6fe7c5bb9bc869dae38917c8de16368ca';
 
-export interface AnalysisRequest {
-  documents: string;
-  questions: string[];
-}
-
-export interface AnalysisResponse {
-  answers: string[];
-}
-
-export interface ApiError {
-  message: string;
-  status?: number;
-}
-
 class ApiClient {
-  private baseURL: string;
-  private token: string;
-
-  constructor(baseURL: string, token: string) {
+  constructor(baseURL, token) {
     this.baseURL = baseURL;
     this.token = token;
   }
 
-  private async makeRequest<T>(
-    endpoint: string, 
-    options: RequestInit = {}
-  ): Promise<T> {
+  async makeRequest(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     
-    const defaultHeaders: HeadersInit = {
+    const defaultHeaders = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': `Bearer ${this.token}`,
     };
 
-    const config: RequestInit = {
+    const config = {
       ...options,
       headers: {
         ...defaultHeaders,
@@ -49,7 +29,7 @@ class ApiClient {
       
       if (!response.ok) {
         const errorText = await response.text();
-        let errorMessage: string;
+        let errorMessage;
         
         try {
           const errorJson = JSON.parse(errorText);
@@ -65,7 +45,7 @@ class ApiClient {
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
       } else {
-        return await response.text() as unknown as T;
+        return await response.text();
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -75,8 +55,8 @@ class ApiClient {
     }
   }
 
-  async analyzeDocuments(data: AnalysisRequest): Promise<AnalysisResponse> {
-    return this.makeRequest<AnalysisResponse>('/hackrx/run', {
+  async analyzeDocuments(data) {
+    return this.makeRequest('/hackrx/run', {
       method: 'POST',
       body: JSON.stringify(data),
     });

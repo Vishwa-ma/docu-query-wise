@@ -9,20 +9,13 @@ import { Brain, Shield, FileText, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-interface AnalysisResult {
-  questions: string[];
-  answers: string[];
-  processingTime?: number;
-  documentUrl?: string;
-}
-
 export const Home = () => {
-  const [documentUrl, setDocumentUrl] = useState<string>('');
+  const [documentUrl, setDocumentUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [results, setResults] = useState<AnalysisResult | null>(null);
+  const [results, setResults] = useState(null);
   const { toast } = useToast();
 
-  const handleDocumentSubmit = (url: string) => {
+  const handleDocumentSubmit = (url) => {
     setDocumentUrl(url);
     setResults(null);
     toast({
@@ -31,7 +24,7 @@ export const Home = () => {
     });
   };
 
-  const handleQuestionsSubmit = async (questions: string[]) => {
+  const handleQuestionsSubmit = async (questions) => {
     if (!documentUrl) {
       toast({
         title: "No Document",
