@@ -3,7 +3,7 @@ import { UploadForm } from '@/components/UploadForm';
 import { QuestionForm } from '@/components/QuestionForm';
 import { AnswerList } from '@/components/AnswerList';
 import { Loader } from '@/components/Loader';
-import { submitQuery } from '@/api/api';
+import apiClient from '@/api/api';
 import { useToast } from '@/hooks/use-toast';
 import { Brain, Shield, FileText, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -45,7 +45,10 @@ export const Home = () => {
     const startTime = Date.now();
 
     try {
-      const response = await submitQuery(documentUrl, questions);
+      const response = await apiClient.analyzeDocuments({
+        documents: documentUrl,
+        questions: questions,
+      });
       const processingTime = Date.now() - startTime;
       
       setResults({
